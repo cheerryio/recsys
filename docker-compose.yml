@@ -1,0 +1,65 @@
+version: "3"
+services: 
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    hostname: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: db
+    ports:
+      - 3306:3306
+    networks:
+      - hadoop
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    hostname: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on: 
+      - mysql
+
+  master:
+#    build:
+#      context: docker
+#      dockerfile: Dockerfile
+    image: cherrooo/hadoop:1.0
+    container_name: master
+    hostname: master
+    restart: on-failure
+    ports: 
+    - 9870:9870
+    - 8088:8088
+    networks: 
+    - hadoop
+    depends_on:
+      - mysql
+      - worker1
+      - worker2
+  
+  worker1:
+    image: cherrooo/hadoop:1.0
+    container_name: worker1
+    hostname: worker1
+    restart: on-failure
+    networks:
+      - hadoop
+
+  worker2:
+    image: cherrooo/hadoop:1.0
+    container_name: worker2
+    hostname: worker2
+    restart: on-failure
+    networks:
+      - hadoop
+
+
+  
+networks:
+  hadoop:
