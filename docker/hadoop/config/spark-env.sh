@@ -1,0 +1,13 @@
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 
+export SCALA_HOME=/usr/local/scala
+export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
+export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+export HADOOP_HDFS_HOME=/usr/local/hadoop
+export SPARK_HOME=/usr/local/spark
+export SPARK_MASTER_HOST=master
+export SPARK_MASTER_PORT=7077
+export SPARK_WORKER_CORES=2
+export SPARK_WORKER_PORT=8901
+export SPARK_WORKER_INSTANCES=1
+export SPARK_WORKER_MEMORY=2g
+export SPARK_MASTER_WEBUI_PORT=8079
