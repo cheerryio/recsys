@@ -1,13 +1,18 @@
 FROM ubuntu:20.04
+LABEL maintainer="cherro"
+ARG TZ="Asia/Shanghai"
 
 WORKDIR /root
+ENV TZ ${TZ}
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone
 
-RUN apt-get update && apt-get install -y ca-certificates
-
+COPY packages/* /tmp/
 ADD config/sources.list /etc/apt/sources.list
+RUN dpkg -i /tmp/libssl1.1_1.1.1f-1ubuntu2.2_amd64.deb && \
+    dpkg -i /tmp/openssl_1.1.1f-1ubuntu2.2_amd64.deb && \
+    dpkg -i /tmp/ca-certificates_20210119_20.04.1_all.deb
 
-# install openssh-server, openjdk and wget
-# NOTE :UPDATE openjdk-7-jdk to openjdk-8-jdk
 RUN apt-get update && apt-get install -y openssh-server openjdk-8-jdk wget
 
 #copy hadoop package
@@ -17,10 +22,10 @@ COPY packages/apache-hive-3.1.2-bin.tar.gz /root/
 # NOTE:I FIND DOWNLOAD HADOOP PACKAGE FROM THE INTERNET ISNOT A GOOD CHOICE,SO,YOU MAY HAVE TO
 # DOWNLOAD THE .tar.gz PACKAGE YOURSELF AND PUT THE PACKAGE IN THE REPOSITORY's ROOT DIRECTORY
 # install hadoop 3.1.4 and hive 3.1.2
-RUN tar -xzvf hadoop-3.1.4.tar.gz && \
+RUN tar -xzvf /tmp/hadoop-3.1.4.tar.gz && \
     mv hadoop-3.1.4 /usr/local/hadoop && \
     rm hadoop-3.1.4.tar.gz  && \
-    tar -xzvf apache-hive-3.1.2-bin.tar.gz && \
+    tar -xzvf /tmp/apache-hive-3.1.2-bin.tar.gz && \
     mv apache-hive-3.1.2-bin /usr/local/hive && \
     rm apache-hive-3.1.2-bin.tar.gz
 
